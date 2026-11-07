@@ -1,28 +1,30 @@
 # TES — Esqueleto da aplicação
 
 Base mínima em Next.js App Router, React e TypeScript.
-A autenticação prevista é **AWS Cognito**, sem Supabase.
+A autenticação utiliza **AWS Cognito**.
 
 ## Executar localmente
 
 Requisito: Node.js 22 e npm.
 
 ```bash
-git switch dev
 npm ci
 cp .env.example .env.local
 npm run dev
 ```
 
-Execute os comandos na raiz de `tes-aplicacao`. `dev` é a branch de
-desenvolvimento, não uma subpasta.
+Execute os comandos na raiz de `tes-aplicacao`.
 
-Acesse http://localhost:3000. A página inicial não exige credenciais AWS.
-As variáveis de ambiente serão necessárias ao implementar a integração.
+Acesse http://localhost:3000. Para usar cadastro e login, preencha as variáveis
+de Cognito em `.env.local` e habilite `USER_PASSWORD_AUTH` no App Client. O
+formulário de login solicita somente email e senha. O User Pool usa username
+e email como alias, com confirmação nativa por email. Consulte
+`infra/cognito/README.md` para a configuração.
 
 ```bash
 npm run lint
 npm run typecheck
+npm test
 npm run build
 npm start
 ```
@@ -36,24 +38,26 @@ src/
   controllers/     Validação e coordenação das requisições (reservado)
   services/        Contratos de casos de uso e autenticação
   repositories/    Contrato de persistência do perfil
-  lib/aws/         Integrações AWS (reservado)
+  lib/auth/        Adaptadores Cognito, sessão e autorização
 infra/             Planejamento da rede e hospedagem AWS
 ```
 
-Fluxo futuro: `View → Server Action/Route Handler → Controller → Service →
-Repository/Adaptador AWS`. Não colocar regras de negócio nas páginas.
-Os contratos são interfaces, não implementações nem autenticação simulada.
+O fluxo de autenticação usa views, Server Actions com validação e adaptadores
+Cognito. Os contratos de perfil permanecem reservados para a persistência futura.
 
-## Escopo preparado para o primeiro protótipo
+## Implementado
 
-- Cadastro e confirmação de usuário, login/logout e alteração de senha via Cognito.
-- Dashboard protegido com menu e edição do próprio perfil.
-- Perfil: nome completo, username, email, imagem, descrição e data de criação.
-  A senha é entrada sensível do Cognito, nunca um atributo retornado do perfil.
-- Autorização verificada no servidor em cada operação sobre dados do usuário.
-- Hospedagem em EC2 com VPC, Security Groups, tabela de rotas e IP público.
+- Cadastro com nome completo, username, email e senha; confirmação nativa por código.
+- Login com email e senha, logout e página protegida de dashboard.
+- Cookie HttpOnly, Secure em produção e SameSite=Lax, com duração do access token.
+- JWT verificado no servidor e identidade baseada no `sub` do Cognito.
+- Testes automatizados sem chamadas reais à AWS.
 
-Foram instalados SDK Cognito, verificador de JWT, Zod e proteção server-only.
-Ainda não há formulários, rotas de autenticação, sessões, dashboard, banco,
-uploads, testes funcionais ou infraestrutura provisionada. A escolha da
-persistência do perfil fica para a próxima etapa. Consulte `infra/README.md`.
+Não há renovação automática de sessão; após expirar, é necessário entrar de novo.
+MFA e outros desafios bloqueiam o login nesta versão. Logout tenta encerrar a
+sessão no Cognito e sempre remove o cookie local; JWTs já emitidos podem continuar
+válidos até expirar para verificadores offline.
+
+Persistência e edição de perfil, imagem, descrição, recuperação/alteração de
+senha e provisionamento AWS permanecem fora desta entrega. A validação com
+User Pool real depende das variáveis de ambiente e da configuração AWS.
