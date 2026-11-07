@@ -1,11 +1,13 @@
 export interface SignInInput {
-  username: string;
+  email: string;
   password: string;
 }
 
-export interface SignUpInput extends SignInInput {
+export interface SignUpInput {
+  username: string;
   fullName: string;
   email: string;
+  password: string;
 }
 
 export interface ConfirmSignUpInput {
@@ -18,7 +20,6 @@ export interface ChangePasswordInput {
   newPassword: string;
 }
 
-/** Contexto produzido no servidor após validar a sessão, nunca pelo formulário. */
 export interface AuthenticatedUser {
   userId: string;
 }
@@ -28,7 +29,13 @@ export interface SignUpResult {
   requiresConfirmation: boolean;
 }
 
-// Login pode exigir confirmação, nova senha ou MFA; não presumir sucesso direto.
 export type SignInResult =
-  | { status: "authenticated"; user: AuthenticatedUser }
-  | { status: "challenge-required"; challenge: string };
+  | { status: "authenticated"; tokens: CognitoTokens }
+  | { status: "challenge-required"; challenge: string; session?: string };
+
+export interface CognitoTokens {
+  accessToken: string;
+  idToken: string;
+  refreshToken?: string;
+  expiresIn: number;
+}

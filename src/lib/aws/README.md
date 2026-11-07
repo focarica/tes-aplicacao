@@ -1,6 +1,6 @@
 # Adaptadores AWS
 
-Espaço reservado à integração com Cognito, exclusivamente no servidor.
+Integração com Cognito em `src/lib/auth`, exclusivamente no servidor.
 
 Dependências instaladas:
 
@@ -10,13 +10,17 @@ Dependências instaladas:
   User Pool, App Client e finalidade do token.
 - `server-only`: impede importação acidental de módulos sensíveis pelo cliente.
 
-O adaptador implementará `AuthService`. Criar sessão com cookies HttpOnly,
-Secure em produção e SameSite apropriado, proteção CSRF e renovação/revogação.
-Não armazenar senhas ou tokens em localStorage, logs ou no modelo `User`.
+Os adaptadores fornecem cadastro, confirmação, login e logout. A sessão usa
+cookie HttpOnly, Secure em produção e SameSite=Lax; as mutações usam Server
+Actions com a verificação de origem padrão do Next.js. Não há renovação automática.
 
-Variáveis previstas em `.env.example`. O SDK deve usar a cadeia padrão de
-credenciais; na EC2, preferir IAM Role de privilégio mínimo, sem chaves estáticas.
-App Clients com segredo exigem SECRET_HASH calculado no servidor. Os fluxos e
-desafios habilitados no User Pool deverão ser tratados antes de liberar acesso.
+Variáveis em `.env.example`. A consulta prévia de email usa `ListUsers` e exige
+credenciais IAM do servidor, com permissão restrita ao User Pool conforme
+`infra/cognito/README.md`. Os demais fluxos usam as APIs públicas. App Clients
+com segredo usam SECRET_HASH calculado no servidor.
+Desafios adicionais de autenticação não criam sessão nesta versão.
 
-Nenhum cliente AWS é instanciado ou chamado neste esqueleto.
+O fluxo de senha requer `USER_PASSWORD_AUTH` habilitado no App Client. O login
+usa email e senha; o cadastro também coleta nome e username. A configuração de
+confirmação nativa por email está descrita em `infra/cognito/README.md`.
+Os identificadores do pool e cliente ficam em `.env.local` conforme `.env.example`.
