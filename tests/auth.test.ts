@@ -16,13 +16,13 @@ describe("authentication input validation", () => {
       username: "ana",
       fullName: "Ana Silva",
       email: "ana@example.com",
-      password: "long-password",
+      password: "Long-password1!",
     }).success).toBe(true);
     expect(signUpSchema.safeParse({
       username: "ana",
       fullName: "Ana Silva",
       email: "not-an-email",
-      password: "long-password",
+      password: "Long-password1!",
     }).success).toBe(false);
   });
 });

@@ -18,6 +18,9 @@ vi.mock("@aws-sdk/client-cognito-identity-provider", () => {
     SignUpCommand: class extends Command {
       constructor(input: Record<string, unknown>) { super("SignUpCommand", input); }
     },
+    ListUsersCommand: class extends Command {
+      constructor(input: Record<string, unknown>) { super("ListUsersCommand", input); }
+    },
     ConfirmSignUpCommand: class extends Command {
       constructor(input: Record<string, unknown>) { super("ConfirmSignUpCommand", input); }
     },
@@ -47,7 +50,7 @@ describe("Cognito authentication adapter", () => {
   });
 
   it("creates a Cognito user with username and profile attributes", async () => {
-    mocks.send.mockResolvedValue({ UserSub: "new-sub", UserConfirmed: false });
+    mocks.send.mockResolvedValueOnce({ Users: [] }).mockResolvedValueOnce({ UserSub: "new-sub", UserConfirmed: false });
     await expect(cognitoAuthProvider.signUp({
       username: "ana",
       fullName: "Ana Silva",
@@ -55,6 +58,10 @@ describe("Cognito authentication adapter", () => {
       password: "strong-password",
     })).resolves.toEqual({ userId: "new-sub", requiresConfirmation: true });
     expect(mocks.commands[0]).toMatchObject({
+      name: "ListUsersCommand",
+      input: { UserPoolId: "us-east-1_testpool", Filter: 'email = "ana@example.com"', Limit: 1 },
+    });
+    expect(mocks.commands[1]).toMatchObject({
       name: "SignUpCommand",
       input: {
         Username: "ana",
@@ -64,6 +71,36 @@ describe("Cognito authentication adapter", () => {
         ],
       },
     });
+  });
+
+  it("rejects an existing email before creating another user, including unconfirmed accounts", async () => {
+    mocks.send.mockResolvedValueOnce({ Users: [{ Username: "other-user", UserStatus: "UNCONFIRMED" }] });
+    await expect(cognitoAuthProvider.signUp({
+      username: "ana",
+      fullName: "Ana Silva",
+      email: "ANA@example.com",
+      password: "Long-password1!",
+    })).rejects.toMatchObject({ name: "EmailExistsException" });
+    expect(mocks.commands).toHaveLength(1);
+    expect(mocks.commands[0].input.Filter).toBe('email = "ana@example.com"');
+  });
+
+  it("does not create a user when the email lookup is unavailable", async () => {
+    mocks.send.mockRejectedValueOnce({ name: "AccessDeniedException" });
+    await expect(cognitoAuthProvider.signUp({
+      username: "ana", fullName: "Ana Silva", email: "ana@example.com", password: "Long-password1!",
+    })).rejects.toMatchObject({ name: "AccessDeniedException" });
+    expect(mocks.commands).toHaveLength(1);
+  });
+
+  it("continues through lookup pages before allowing signup", async () => {
+    mocks.send.mockResolvedValueOnce({ Users: [], PaginationToken: "next-page" })
+      .mockResolvedValueOnce({ Users: [{ Username: "existing" }] });
+    await expect(cognitoAuthProvider.signUp({
+      username: "ana", fullName: "Ana Silva", email: "ana@example.com", password: "Long-password1!",
+    })).rejects.toMatchObject({ name: "EmailExistsException" });
+    expect(mocks.commands).toHaveLength(2);
+    expect(mocks.commands[1].input.PaginationToken).toBe("next-page");
   });
 
   it("authenticates with email and password and returns the Cognito tokens", async () => {

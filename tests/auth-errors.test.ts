@@ -8,6 +8,7 @@ describe("authentication error messages", () => {
   it("explains duplicate usernames and email aliases", () => {
     expect(userFacingError({ name: "UsernameExistsException" }, "signup")).toContain("nome de usuário já está cadastrado");
     expect(userFacingError({ name: "AliasExistsException" }, "confirm")).toContain("email já está associado");
+    expect(userFacingError({ name: "EmailExistsException" }, "signup")).toContain("email já está cadastrado");
   });
 
   it.each([

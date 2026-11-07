@@ -12,6 +12,7 @@ beforeEach(() => vi.clearAllMocks());
 describe("signup action failures", () => {
   it.each([
     ["UsernameExistsException", "nome de usuário já está cadastrado"],
+    ["EmailExistsException", "email já está cadastrado"],
     ["InvalidPasswordException", "política de segurança"],
     ["CodeDeliveryFailureException", "enviar o código"],
     ["CognitoConfigurationError", "variáveis de ambiente"],
