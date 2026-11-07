@@ -9,7 +9,10 @@ import { confirmSignUpSchema, signUpSchema } from "@/lib/auth/validation";
 
 export async function signUpAction(_state: AuthActionState, formData: FormData): Promise<AuthActionState> {
   const parsed = signUpSchema.safeParse(Object.fromEntries(formData.entries()));
-  if (!parsed.success) return { error: "Preencha os campos corretamente (senha com ao menos 8 caracteres)." };
+  if (!parsed.success) {
+    const invalidPassword = parsed.error.issues.some((issue) => issue.path[0] === "password");
+    return { error: invalidPassword ? "A senha deve atender a todos os requisitos indicados abaixo do campo." : "Confira nome completo, username e email." };
+  }
   try {
     const result = await cognitoRegistration.signUp(parsed.data);
     if (!result.requiresConfirmation) {

@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import type { AuthActionState } from "@/models/auth-action.model";
 import { ConfirmationDialog } from "@/components/auth/confirmation-dialog";
+import { PasswordField } from "@/components/auth/password-field";
 
 type AuthAction = (state: AuthActionState, formData: FormData) => Promise<AuthActionState>;
 
@@ -23,7 +24,9 @@ export function AuthForm({
   return (
     <>
       <form action={formAction} className="auth-form">
-        {fields.map((field) => (
+        {fields.map((field) => field.autoComplete === "new-password" ? (
+          <PasswordField key={field.name} name={field.name} label={field.label} />
+        ) : (
           <label className="auth-field" key={field.name}>
             <span>{field.label}</span>
             <input
@@ -31,7 +34,6 @@ export function AuthForm({
               type={field.type ?? "text"}
               autoComplete={field.autoComplete}
               required
-              minLength={field.autoComplete === "new-password" ? 8 : undefined}
             />
           </label>
         ))}

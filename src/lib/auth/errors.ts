@@ -1,4 +1,9 @@
 const messages: Record<string, string> = {
+  EmailExistsException: "Este email já está cadastrado. Entre na sua conta ou use outro email.",
+  CredentialsProviderError: "A consulta de email exige credenciais AWS no servidor. Configure o perfil AWS ou a IAM Role da aplicação.",
+  AccessDeniedException: "O servidor não tem permissão para consultar os emails cadastrados. Verifique a permissão IAM cognito-idp:ListUsers.",
+  UnrecognizedClientException: "As credenciais AWS do servidor são inválidas ou expiraram.",
+  ExpiredTokenException: "As credenciais AWS do servidor expiraram. Renove a sessão AWS.",
   NotAuthorizedException: "Email ou senha inválidos.",
   UserNotFoundException: "Email ou senha inválidos.",
   UserNotConfirmedException: "Confirme seu cadastro antes de entrar.",

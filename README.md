@@ -48,6 +48,8 @@ Cognito. Os contratos de perfil permanecem reservados para a persistência futur
 ## Implementado
 
 - Cadastro com nome completo, username, email e senha; confirmação nativa por código.
+- Consulta prévia de email no servidor via `ListUsers`, com permissão IAM restrita.
+- Requisitos de senha exibidos em tempo real e validados também no servidor.
 - Login com email e senha, logout e página protegida de dashboard.
 - Cookie HttpOnly, Secure em produção e SameSite=Lax, com duração do access token.
 - JWT verificado no servidor e identidade baseada no `sub` do Cognito.

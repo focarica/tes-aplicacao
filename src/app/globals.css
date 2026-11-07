@@ -34,6 +34,19 @@ main {
 .auth-error { color: #a21caf; }
 .auth-message { font-size: 0.9rem; }
 
+.password-requirements {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  border: 0;
+  font-size: 0.85rem;
+}
+
+.password-requirements legend { margin-bottom: 0.5rem; }
+.password-rule { display: flex; align-items: center; gap: 0.5rem; }
+.password-rule input { margin: 0; accent-color: #166534; }
+
 .confirmation-dialog {
   width: min(28rem, calc(100% - 4rem));
   max-height: calc(100dvh - 4rem);

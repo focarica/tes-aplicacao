@@ -14,8 +14,10 @@ Os adaptadores fornecem cadastro, confirmação, login e logout. A sessão usa
 cookie HttpOnly, Secure em produção e SameSite=Lax; as mutações usam Server
 Actions com a verificação de origem padrão do Next.js. Não há renovação automática.
 
-Variáveis em `.env.example`. Os fluxos públicos usados pelo SDK não exigem
-chaves IAM. App Clients com segredo usam SECRET_HASH calculado no servidor.
+Variáveis em `.env.example`. A consulta prévia de email usa `ListUsers` e exige
+credenciais IAM do servidor, com permissão restrita ao User Pool conforme
+`infra/cognito/README.md`. Os demais fluxos usam as APIs públicas. App Clients
+com segredo usam SECRET_HASH calculado no servidor.
 Desafios adicionais de autenticação não criam sessão nesta versão.
 
 O fluxo de senha requer `USER_PASSWORD_AUTH` habilitado no App Client. O login
