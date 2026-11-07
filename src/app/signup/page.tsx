@@ -18,7 +18,6 @@ export default function SignupPage() {
           { name: "password", label: "Senha", type: "password", autoComplete: "new-password" },
         ]}
       />
-      <p><Link href="/confirm-signup">Já tem um código de confirmação?</Link></p>
       <p><Link href="/login">Já tem conta? Entrar</Link></p>
     </main>
   );

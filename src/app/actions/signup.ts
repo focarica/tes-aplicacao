@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import type { AuthActionState } from "@/models/auth-action.model";
 import { cognitoRegistration } from "@/lib/auth/registration";
 import { userFacingError } from "@/lib/auth/errors";
+import { reportAuthError } from "@/lib/auth/diagnostics";
 import { confirmSignUpSchema, signUpSchema } from "@/lib/auth/validation";
 
 export async function signUpAction(_state: AuthActionState, formData: FormData): Promise<AuthActionState> {
@@ -16,7 +17,8 @@ export async function signUpAction(_state: AuthActionState, formData: FormData):
     }
     return { message: "Cadastro iniciado. Informe o código recebido por email para confirmar a conta.", username: parsed.data.username };
   } catch (error) {
-    return { error: userFacingError(error) };
+    reportAuthError("signup", error);
+    return { error: userFacingError(error, "signup") };
   }
 }
 
@@ -26,7 +28,8 @@ export async function confirmSignUpAction(_state: AuthActionState, formData: For
   try {
     await cognitoRegistration.confirmSignUp(parsed.data);
   } catch (error) {
-    return { error: userFacingError(error) };
+    reportAuthError("confirm", error);
+    return { error: userFacingError(error, "confirm") };
   }
   redirect("/login?confirmed=1");
 }

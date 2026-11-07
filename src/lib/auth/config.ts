@@ -12,7 +12,7 @@ const envSchema = z.object({
 export function getCognitoConfig() {
   const parsed = envSchema.safeParse(process.env);
   if (!parsed.success) {
-    throw new Error("AWS Cognito is not configured. Check server environment variables.");
+    throw Object.assign(new Error("AWS Cognito is not configured."), { name: "CognitoConfigurationError" });
   }
   return parsed.data;
 }

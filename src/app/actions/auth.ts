@@ -6,6 +6,7 @@ import { cognitoAuthProvider } from "@/lib/auth/cognito";
 import { clearSession, createSession } from "@/lib/auth/session";
 import { signInSchema } from "@/lib/auth/validation";
 import { userFacingError } from "@/lib/auth/errors";
+import { reportAuthError } from "@/lib/auth/diagnostics";
 import type { AuthActionState } from "@/models/auth-action.model";
 
 export async function signInAction(_state: AuthActionState, formData: FormData): Promise<AuthActionState> {
@@ -19,7 +20,8 @@ export async function signInAction(_state: AuthActionState, formData: FormData):
     if (!result.tokens) return { error: "O provedor não retornou uma sessão válida." };
     await createSession(result.tokens);
   } catch (error) {
-    return { error: userFacingError(error) };
+    reportAuthError("signin", error);
+    return { error: userFacingError(error, "signin") };
   }
   redirect("/dashboard");
 }
