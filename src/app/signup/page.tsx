@@ -9,6 +9,7 @@ export default function SignupPage() {
       <p>Cadastre-se para acessar a aplicação.</p>
       <AuthForm
         action={signUpAction}
+        confirmRegistration
         submitLabel="Criar conta"
         fields={[
           { name: "fullName", label: "Nome completo", autoComplete: "name" },
