@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getAuthenticatedUser } from "@/lib/auth/session";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const user = await getAuthenticatedUser();
+  if (user) redirect("/dashboard");
+
   return (
     <main>
       <h1>TES — Aplicação</h1>
