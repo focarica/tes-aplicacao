@@ -12,3 +12,24 @@ main {
   margin: 4rem auto;
   padding: 0 1.5rem;
 }
+
+.auth-card {
+  max-width: 28rem;
+  margin: 4rem auto;
+  padding: 2rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 1rem;
+}
+
+.auth-form {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.auth-field { display: grid; gap: 0.4rem; }
+.auth-field input { padding: 0.7rem; border: 1px solid #aaa; border-radius: 0.4rem; }
+.auth-button { padding: 0.75rem; border: 0; border-radius: 0.4rem; cursor: pointer; }
+.auth-button:disabled { cursor: wait; opacity: 0.6; }
+.auth-error { color: #a21caf; }
+.auth-message { font-size: 0.9rem; }
