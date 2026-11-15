@@ -7,3 +7,8 @@ output "vpc_id" {
   description = "VPC para o servidor da aplicação."
   value       = aws_vpc.main.id
 }
+
+output "subnet_id" {
+  description = "Sub-rede pública para a EC2; definir IP público na criação da instância."
+  value       = aws_subnet.web.id
+}

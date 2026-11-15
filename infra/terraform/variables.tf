@@ -16,3 +16,9 @@ variable "project_name" {
     error_message = "Use de 3 a 32 caracteres: letras minúsculas, números e hífen, começando com uma letra."
   }
 }
+
+variable "availability_zone" {
+  description = "Zona da sub-rede; null permite que a AWS selecione uma na região."
+  type        = string
+  default     = null
+}

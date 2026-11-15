@@ -1,2 +1,5 @@
 aws_region   = "us-east-1"
 project_name = "tes"
+
+# Opcional: zona permitida na região escolhida.
+# availability_zone = "us-east-1a"

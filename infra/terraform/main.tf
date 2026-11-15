@@ -21,7 +21,8 @@ provider "aws" {
 }
 
 locals {
-  vpc_cidr = "10.0.0.0/16"
+  vpc_cidr    = "10.0.0.0/16"
+  subnet_cidr = cidrsubnet(local.vpc_cidr, 8, 1) # 10.0.1.0/24
 }
 
 resource "aws_vpc" "main" {
@@ -30,4 +31,13 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
 
   tags = { Name = "${var.project_name}-vpc" }
+}
+
+resource "aws_subnet" "web" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = local.subnet_cidr
+  availability_zone       = var.availability_zone
+  map_public_ip_on_launch = false # O IP público será definido na etapa da EC2.
+
+  tags = { Name = "${var.project_name}-subnet-public" }
 }
