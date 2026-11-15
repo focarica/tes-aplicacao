@@ -156,7 +156,7 @@ export default function GalleryClient() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((file, index) => (
           <div
-            key={file.id}
+            key={`${file.id}-${tab}`}
             className="animate-card-in"
             style={{ animationDelay: `${Math.min(index, 12) * 50}ms` }}
           >

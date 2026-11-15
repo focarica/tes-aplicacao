@@ -37,8 +37,8 @@ export function AuthForm({
     <>
       <form action={formAction} className="mt-5 space-y-3">
         {fields.map((field) => {
-          if (field.autoComplete === "new-password") {
-            return <PasswordField key={field.name} name={field.name} label={field.label} />;
+          if (field.type === "password") {
+            return <PasswordField key={field.name} name={field.name} label={field.label} autoComplete={field.autoComplete} requiresPolicy={field.autoComplete === "new-password"} />;
           }
           const required = field.required ?? true;
           return (

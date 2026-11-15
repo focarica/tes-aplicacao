@@ -12,6 +12,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Galeria - TES",
   description: "Galeria privada com autenticação AWS Cognito e armazenamento S3.",
+  icons: { icon: "/image_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

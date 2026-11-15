@@ -13,6 +13,7 @@ import {
 import { authErrorName, userFacingError } from "@/lib/auth/errors";
 import { reportAuthError } from "@/lib/auth/diagnostics";
 import { MAX_AVATAR_BYTES } from "@/lib/media";
+import { cognitoPasswordSchema } from "@/lib/auth/validation";
 import {
   assertAvatarOwnership,
   avatarObject,
@@ -27,7 +28,7 @@ const profileSchema = z.object({
 const passwordSchema = z
   .object({
     currentPassword: z.string().min(1, "Informe a senha atual.").max(256),
-    newPassword: z.string().min(1, "Informe a nova senha.").max(256),
+    newPassword: cognitoPasswordSchema,
     confirmPassword: z.string().min(1, "Confirme a nova senha.").max(256),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {

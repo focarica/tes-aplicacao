@@ -17,8 +17,11 @@ de login verificado pelo Cognito.
 - Verificação automática de email habilitada, com código de confirmação.
 - MFA desativado para o fluxo atual.
 - Nenhum trigger de auto-confirmação.
-- Política de senha definida no próprio User Pool; a aplicação não valida
-  requisitos localmente e apenas repassa a mensagem de erro do Cognito.
+- Política de senha: mínimo de 8 caracteres, com pelo menos uma maiúscula,
+  uma minúscula, um número e um símbolo. A aplicação replica esses requisitos
+  no cadastro e na troca de senha para avisar antes do envio ao Cognito. Se a
+  política do User Pool for alterada, atualize também
+  `cognitoPasswordSchema` em `src/lib/auth/validation.ts`.
 
 As opções de identificador e atributos obrigatórios são definidas na criação
 do pool. Um pool criado somente com username precisa ser substituído para
