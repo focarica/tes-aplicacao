@@ -16,8 +16,10 @@ export function PasswordField({ name, label }: { name: string; label: string }) 
   }, []);
 
   return (
-    <div className="auth-field">
-      <label htmlFor={id}>{label}</label>
+    <div className="grid gap-1.5">
+      <label htmlFor={id} className="text-sm font-medium text-espresso">
+        {label}
+      </label>
       <input
         ref={inputRef}
         id={id}
@@ -29,12 +31,13 @@ export function PasswordField({ name, label }: { name: string; label: string }) 
         maxLength={256}
         aria-describedby={`${id}-requirements`}
         onChange={(event) => setPassword(event.target.value)}
+        className="w-full rounded-xl border border-sand bg-white px-3 py-2 text-stone-800 placeholder:text-stone-400 outline-none focus:ring-2 focus:ring-latte/50"
       />
-      <fieldset id={`${id}-requirements`} className="password-requirements">
-        <legend>A senha deve conter:</legend>
+      <fieldset id={`${id}-requirements`} className="mt-1 grid gap-1 text-xs text-stone-500">
+        <legend className="mb-1">A senha deve conter:</legend>
         {passwordRules.map((rule) => (
-          <label key={rule.id} className="password-rule">
-            <input type="checkbox" checked={rule.test(password)} disabled />
+          <label key={rule.id} className="flex items-center gap-2">
+            <input type="checkbox" checked={rule.test(password)} disabled className="accent-espresso" />
             <span>{rule.label}</span>
           </label>
         ))}
