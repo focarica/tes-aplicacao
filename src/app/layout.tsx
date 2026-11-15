@@ -4,13 +4,13 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "TES — Aplicação",
-  description: "Estrutura inicial do protótipo da aplicação TES.",
+  description: "Galeria privada com autenticação AWS Cognito e armazenamento S3.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body className="bg-parchment text-stone-800 antialiased">{children}</body>
     </html>
   );
 }
