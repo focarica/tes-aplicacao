@@ -43,7 +43,7 @@ src/
   lib/auth/        Adaptadores Cognito, sessão e autorização
   lib/aws/         Adaptador S3 (presign, listagem e exclusão)
   lib/media.ts     Classificação e validação de uploads
-infra/             Planejamento da rede e hospedagem AWS
+infra/             Terraform da rede AWS e configuração de Cognito/S3
 ```
 
 O fluxo de autenticação usa views, Server Actions com validação e adaptadores
@@ -81,7 +81,8 @@ Limites de upload: 50 MB por imagem, 500 MB por vídeo e 100 MB por documento.
 
 - Cadastro com nome completo, username, email, senha e descrição; confirmação nativa por código em página própria, com o username pré-preenchido.
 - Consulta prévia de email no servidor via `ListUsers`, com permissão IAM restrita.
-- Senha validada apenas pelo Cognito; a aplicação não impõe política própria.
+- Requisitos de senha do Cognito verificados também pela aplicação no cadastro
+  e na troca de senha.
 - Login com email e senha, logout e página protegida de dashboard.
 - Cookie HttpOnly, Secure em produção e SameSite=Lax, com duração do access token.
 - JWT verificado no servidor e identidade baseada no `sub` do Cognito.
@@ -104,3 +105,6 @@ entrega. A data de criação depende de `AdminGetUser` com a permissão IAM
 correspondente; sem ela, o perfil carrega com a data em branco. A validação com
 User Pool e bucket S3 reais depende das variáveis de ambiente e da configuração
 AWS.
+
+A rede AWS está definida em Terraform e foi validada em uma conta de teste.
+EC2 e deploy ainda estão pendentes. Consulte [Infraestrutura](infra/README.md).
