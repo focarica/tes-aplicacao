@@ -13,6 +13,11 @@ output "subnet_id" {
   value       = aws_subnet.web.id
 }
 
+output "security_group_id" {
+  description = "Grupo de segurança a associar à EC2."
+  value       = aws_security_group.web.id
+}
+
 output "internet_gateway_id" {
   description = "Gateway de Internet da VPC."
   value       = aws_internet_gateway.main.id

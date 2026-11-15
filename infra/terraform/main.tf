@@ -62,3 +62,29 @@ resource "aws_route_table_association" "web" {
   subnet_id      = aws_subnet.web.id
   route_table_id = aws_route_table.web.id
 }
+
+resource "aws_security_group" "web" {
+  name        = "${var.project_name}-sg-web"
+  description = "HTTP/HTTPS for TES; optional SSH from one administrative IPv4"
+  vpc_id      = aws_vpc.main.id
+
+  tags = { Name = "${var.project_name}-sg-web" }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "web" {
+  for_each = { http = 80, https = 443 }
+
+  security_group_id = aws_security_group.web.id
+  description       = each.key == "http" ? "HTTP redirect and ACME" : "HTTPS website"
+  ip_protocol       = "tcp"
+  from_port         = each.value
+  to_port           = each.value
+  cidr_ipv4         = "0.0.0.0/0"
+}
+
+resource "aws_vpc_security_group_egress_rule" "outbound" {
+  security_group_id = aws_security_group.web.id
+  description       = "Outbound access for dependencies and AWS services"
+  ip_protocol       = "-1"
+  cidr_ipv4         = "0.0.0.0/0"
+}
