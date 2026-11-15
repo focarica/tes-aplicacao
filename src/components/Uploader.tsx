@@ -25,11 +25,11 @@ function kindOfFile(file: File): UploadKind {
   return "other";
 }
 
-const TABS: { key: UploadTab; label: string }[] = [
-  { key: "all", label: "Todos" },
-  { key: "image", label: "Imagens" },
-  { key: "video", label: "Vídeos" },
-  { key: "other", label: "Documentos" },
+const TABS: { key: UploadTab; label: string; icon: string }[] = [
+  { key: "all", label: "Todos", icon: "/folder_copy_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" },
+  { key: "image", label: "Imagens", icon: "/photo_camera_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" },
+  { key: "video", label: "Vídeos", icon: "/videocam_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" },
+  { key: "other", label: "Documentos", icon: "/library_books_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" },
 ];
 
 export default function Uploader({ onUploaded }: Props) {
@@ -171,12 +171,13 @@ export default function Uploader({ onUploaded }: Props) {
                   role="tab"
                   aria-selected={tab === item.key}
                   onClick={() => setTab(item.key)}
-                  className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                  className={`inline-flex items-center gap-1 rounded-md px-3 py-1 text-xs font-medium transition-colors ${
                     tab === item.key
                       ? "bg-cream text-espresso shadow-sm"
                       : "text-stone-500 hover:text-espresso"
                   }`}
                 >
+                  <img src={item.icon} alt="" aria-hidden="true" className={`h-3.5 w-3.5 ${tab === item.key ? "brightness-0 opacity-80" : "brightness-0 opacity-50"}`} />
                   {item.label} ({counts[item.key]})
                 </button>
               ))}

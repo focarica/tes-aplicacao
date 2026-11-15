@@ -10,11 +10,11 @@ import { preloadGalleryImages } from "@/lib/images";
 
 type GalleryTab = "all" | "image" | "video" | "other";
 
-const TABS: { key: GalleryTab; label: string }[] = [
-  { key: "all", label: "Todos" },
-  { key: "image", label: "Imagens" },
-  { key: "video", label: "Vídeos" },
-  { key: "other", label: "Documentos" },
+const TABS: { key: GalleryTab; label: string; icon: string }[] = [
+  { key: "all", label: "Todos", icon: "/folder_copy_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" },
+  { key: "image", label: "Imagens", icon: "/photo_camera_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" },
+  { key: "video", label: "Vídeos", icon: "/videocam_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" },
+  { key: "other", label: "Documentos", icon: "/library_books_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" },
 ];
 
 export default function GalleryClient() {
@@ -90,12 +90,13 @@ export default function GalleryClient() {
               role="tab"
               aria-selected={tab === item.key}
               onClick={() => setTab(item.key)}
-              className={`rounded-lg px-4 py-1.5 text-sm font-medium transition-colors ${
+              className={`inline-flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-sm font-medium transition-colors ${
                 tab === item.key
                   ? "bg-espresso text-amber-50 shadow-sm"
                   : "text-stone-500 hover:text-espresso"
               }`}
             >
+              <img src={item.icon} alt="" aria-hidden="true" className={`h-4 w-4 ${tab === item.key ? "brightness-0 invert" : "brightness-0 opacity-50"}`} />
               {item.label} ({counts[item.key]})
             </button>
           ))}
