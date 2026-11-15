@@ -56,6 +56,7 @@ describe("Cognito authentication adapter", () => {
       fullName: "Ana Silva",
       email: "ana@example.com",
       password: "strong-password",
+      description: "Fotógrafa",
     })).resolves.toEqual({ userId: "new-sub", requiresConfirmation: true });
     expect(mocks.commands[0]).toMatchObject({
       name: "ListUsersCommand",
@@ -68,6 +69,7 @@ describe("Cognito authentication adapter", () => {
         UserAttributes: [
           { Name: "email", Value: "ana@example.com" },
           { Name: "name", Value: "Ana Silva" },
+          { Name: "custom:description", Value: "Fotógrafa" },
         ],
       },
     });
@@ -80,6 +82,7 @@ describe("Cognito authentication adapter", () => {
       fullName: "Ana Silva",
       email: "ANA@example.com",
       password: "Long-password1!",
+      description: "",
     })).rejects.toMatchObject({ name: "EmailExistsException" });
     expect(mocks.commands).toHaveLength(1);
     expect(mocks.commands[0].input.Filter).toBe('email = "ana@example.com"');
@@ -88,7 +91,7 @@ describe("Cognito authentication adapter", () => {
   it("does not create a user when the email lookup is unavailable", async () => {
     mocks.send.mockRejectedValueOnce({ name: "AccessDeniedException" });
     await expect(cognitoAuthProvider.signUp({
-      username: "ana", fullName: "Ana Silva", email: "ana@example.com", password: "Long-password1!",
+      username: "ana", fullName: "Ana Silva", email: "ana@example.com", password: "Long-password1!", description: "",
     })).rejects.toMatchObject({ name: "AccessDeniedException" });
     expect(mocks.commands).toHaveLength(1);
   });
@@ -97,7 +100,7 @@ describe("Cognito authentication adapter", () => {
     mocks.send.mockResolvedValueOnce({ Users: [], PaginationToken: "next-page" })
       .mockResolvedValueOnce({ Users: [{ Username: "existing" }] });
     await expect(cognitoAuthProvider.signUp({
-      username: "ana", fullName: "Ana Silva", email: "ana@example.com", password: "Long-password1!",
+      username: "ana", fullName: "Ana Silva", email: "ana@example.com", password: "Long-password1!", description: "",
     })).rejects.toMatchObject({ name: "EmailExistsException" });
     expect(mocks.commands).toHaveLength(2);
     expect(mocks.commands[1].input.PaginationToken).toBe("next-page");

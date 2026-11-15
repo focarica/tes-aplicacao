@@ -31,6 +31,7 @@ export const cognitoRegistration = {
       UserAttributes: [
         { Name: "email", Value: email },
         { Name: "name", Value: input.fullName },
+        ...(input.description ? [{ Name: "custom:description", Value: input.description }] : []),
       ],
     }));
     if (!response.UserSub) throw new Error("Cognito did not return a user identifier.");

@@ -12,7 +12,7 @@ describe("authentication error messages", () => {
   });
 
   it.each([
-    ["InvalidPasswordException", "política de segurança"],
+    ["InvalidPasswordException", "não foi aceita pelo Cognito"],
     ["CodeDeliveryFailureException", "cadastro pode ter sido criado"],
     ["TooManyRequestsException", "Muitas tentativas"],
     ["CognitoConfigurationError", "variáveis de ambiente"],
