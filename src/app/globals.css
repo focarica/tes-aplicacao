@@ -1,61 +1,161 @@
-:root {
-  color-scheme: light;
-  font-family: system-ui, sans-serif;
+@import "tailwindcss";
+
+@theme {
+  --color-parchment: #f5efe1;
+  --color-cream: #fffdf7;
+  --color-sand: #e7dbc2;
+  --color-sand-dark: #d5c4a1;
+  --color-latte: #b98d4f;
+  --color-espresso: #43301f;
+  --color-espresso-light: #5f452e;
+  --font-title: var(--font-geist-mono);
 }
 
 body {
-  margin: 0;
+  background-color: var(--color-parchment);
+  color: #292524;
 }
 
-main {
-  max-width: 48rem;
-  margin: 4rem auto;
-  padding: 0 1.5rem;
+/* Cursor de ponteiro em todos os elementos interativos */
+button:not(:disabled),
+a,
+input[type="file"],
+input[type="file"]::file-selector-button,
+[role="tab"],
+[role="button"] {
+  cursor: pointer;
 }
 
-.auth-card {
-  max-width: 28rem;
-  margin: 4rem auto;
-  padding: 2rem;
-  border: 1px solid #d4d4d4;
-  border-radius: 1rem;
+button:disabled,
+a[aria-disabled="true"] {
+  cursor: not-allowed;
 }
 
-.auth-form {
-  display: grid;
-  gap: 1rem;
-  margin: 1.5rem 0;
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.auth-field { display: grid; gap: 0.4rem; }
-.auth-field input { padding: 0.7rem; border: 1px solid #aaa; border-radius: 0.4rem; }
-.auth-button { padding: 0.75rem; border: 0; border-radius: 0.4rem; cursor: pointer; }
-.auth-button:disabled { cursor: wait; opacity: 0.6; }
-.auth-error { color: #a21caf; }
-.auth-message { font-size: 0.9rem; }
-
-.password-requirements {
-  display: grid;
-  gap: 0.4rem;
-  margin: 0.25rem 0 0;
-  padding: 0;
-  border: 0;
-  font-size: 0.85rem;
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.password-requirements legend { margin-bottom: 0.5rem; }
-.password-rule { display: flex; align-items: center; gap: 0.5rem; }
-.password-rule input { margin: 0; accent-color: #166534; }
-
-.confirmation-dialog {
-  width: min(28rem, calc(100% - 4rem));
-  max-height: calc(100dvh - 4rem);
-  padding: 1.5rem;
-  border: 1px solid #d4d4d4;
-  border-radius: 1rem;
-  overflow-y: auto;
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.confirmation-dialog::backdrop {
-  background: rgb(0 0 0 / 50%);
+@keyframes title-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes modal-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 240ms ease-out both;
+}
+
+.animate-pop {
+  animation: pop 160ms ease-out both;
+}
+
+.animate-title-in {
+  animation: title-in 220ms ease-out both;
+}
+
+.animate-card-in {
+  animation: card-in 260ms ease-out both;
+}
+
+.animate-fade-in {
+  animation: fade-in 160ms ease-out both;
+}
+
+.animate-fade-out {
+  animation: fade-out 160ms ease-in both;
+}
+
+.animate-modal-in {
+  animation: modal-in 180ms ease-out both;
+}
+
+.animate-modal-out {
+  animation: modal-out 160ms ease-in both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-pop,
+  .animate-card-in,
+  .animate-title-in,
+  .animate-fade-in,
+  .animate-fade-out,
+  .animate-modal-in,
+  .animate-modal-out {
+    animation: none;
+  }
 }

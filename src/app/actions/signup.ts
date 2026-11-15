@@ -10,19 +10,18 @@ import { confirmSignUpSchema, signUpSchema } from "@/lib/auth/validation";
 export async function signUpAction(_state: AuthActionState, formData: FormData): Promise<AuthActionState> {
   const parsed = signUpSchema.safeParse(Object.fromEntries(formData.entries()));
   if (!parsed.success) {
-    const invalidPassword = parsed.error.issues.some((issue) => issue.path[0] === "password");
-    return { error: invalidPassword ? "A senha deve atender a todos os requisitos indicados abaixo do campo." : "Confira nome completo, username e email." };
+    return { error: "Confira nome completo, username, email, descrição e senha." };
   }
   try {
     const result = await cognitoRegistration.signUp(parsed.data);
     if (!result.requiresConfirmation) {
       return { message: "Cadastro concluído. Você já pode entrar." };
     }
-    return { message: "Cadastro iniciado. Informe o código recebido por email para confirmar a conta.", username: parsed.data.username };
   } catch (error) {
     reportAuthError("signup", error);
     return { error: userFacingError(error, "signup") };
   }
+  redirect(`/confirm-signup?username=${encodeURIComponent(parsed.data.username)}`);
 }
 
 export async function confirmSignUpAction(_state: AuthActionState, formData: FormData): Promise<AuthActionState> {

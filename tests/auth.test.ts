@@ -12,17 +12,20 @@ describe("authentication input validation", () => {
   });
 
   it("requires registration profile fields and a valid email", () => {
-    expect(signUpSchema.safeParse({
+    const parsed = signUpSchema.safeParse({
       username: "ana",
       fullName: "Ana Silva",
       email: "ana@example.com",
-      password: "Long-password1!",
-    }).success).toBe(true);
+      password: "senha-simples",
+      description: "  Fotógrafa  ",
+    });
+    expect(parsed.success).toBe(true);
+    expect(parsed.data?.description).toBe("Fotógrafa");
     expect(signUpSchema.safeParse({
       username: "ana",
       fullName: "Ana Silva",
       email: "not-an-email",
-      password: "Long-password1!",
+      password: "senha-simples",
     }).success).toBe(false);
   });
 });

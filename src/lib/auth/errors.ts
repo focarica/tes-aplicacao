@@ -9,7 +9,7 @@ const messages: Record<string, string> = {
   UserNotConfirmedException: "Confirme seu cadastro antes de entrar.",
   UsernameExistsException: "Este nome de usuário já está cadastrado. Escolha outro ou entre na sua conta.",
   AliasExistsException: "Este email já está associado a outra conta. Use outro email ou entre na sua conta.",
-  InvalidPasswordException: "A senha não atende à política de segurança. Confira os requisitos de tamanho, letras maiúsculas e minúsculas, números e símbolos do cadastro.",
+  InvalidPasswordException: "A senha não foi aceita pelo Cognito. Tente outra.",
   CodeMismatchException: "Código de confirmação inválido. Confira o código recebido por email.",
   ExpiredCodeException: "O código de confirmação expirou.",
   TooManyRequestsException: "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.",

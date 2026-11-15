@@ -8,7 +8,9 @@ export interface User {
   createdAt: string;
 }
 
-export type UpdateUserProfile = Pick<
-  User,
-  "fullName" | "username" | "email" | "profileImageUrl" | "description"
->;
+export type UpdateUserProfile = Pick<User, "fullName" | "description">;
+
+/** Perfil interno do usuário; a chave do avatar não é enviada ao cliente. */
+export interface UserProfile extends User {
+  avatarKey: string | null;
+}

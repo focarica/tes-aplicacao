@@ -1,16 +1,9 @@
-import { redirect } from "next/navigation";
-import { SignOutButton } from "@/components/auth/sign-out-button";
-import { getAuthenticatedUser } from "@/lib/auth/session";
+import GalleryClient from "@/components/GalleryClient";
 
-export default async function DashboardPage() {
-  const user = await getAuthenticatedUser();
-  if (!user) redirect("/login");
-
+export default function DashboardPage() {
   return (
-    <main>
-      <h1>Dashboard</h1>
-      <p>Autenticado. Identificador Cognito: {user.userId}</p>
-      <SignOutButton />
-    </main>
+    <div className="animate-fade-up">
+      <GalleryClient />
+    </div>
   );
 }
