@@ -17,3 +17,8 @@ output "internet_gateway_id" {
   description = "Gateway de Internet da VPC."
   value       = aws_internet_gateway.main.id
 }
+
+output "route_table_id" {
+  description = "Tabela associada à sub-rede web."
+  value       = aws_route_table.web.id
+}
