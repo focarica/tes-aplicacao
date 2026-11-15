@@ -12,3 +12,8 @@ output "subnet_id" {
   description = "Sub-rede pública para a EC2; definir IP público na criação da instância."
   value       = aws_subnet.web.id
 }
+
+output "internet_gateway_id" {
+  description = "Gateway de Internet da VPC."
+  value       = aws_internet_gateway.main.id
+}

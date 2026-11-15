@@ -41,3 +41,8 @@ resource "aws_subnet" "web" {
 
   tags = { Name = "${var.project_name}-subnet-public" }
 }
+
+resource "aws_internet_gateway" "main" {
+  vpc_id = aws_vpc.main.id
+  tags   = { Name = "${var.project_name}-igw" }
+}
