@@ -12,7 +12,7 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { z } from "zod";
 import type { FileRecord } from "@/models/file.model";
-import { validateUpload } from "@/lib/media";
+import { validateAvatar, validateUpload } from "@/lib/media";
 
 const envSchema = z.object({
   AWS_REGION: z.string().min(1),
@@ -36,10 +36,22 @@ function userPrefix(userId: string) {
   return `uploads/${userId}/`;
 }
 
-export function assertKeyOwnership(userId: string, key: string) {
-  if (!key.startsWith(userPrefix(userId)) || key.includes("..")) {
+function avatarPrefix(userId: string) {
+  return `avatars/${userId}/`;
+}
+
+function assertPrefix(userId: string, key: string, prefix: string) {
+  if (!key.startsWith(prefix) || key.includes("..")) {
     throw Object.assign(new Error("FORBIDDEN"), { name: "ForbiddenError" });
   }
+}
+
+export function assertKeyOwnership(userId: string, key: string) {
+  assertPrefix(userId, key, userPrefix(userId));
+}
+
+export function assertAvatarOwnership(userId: string, key: string) {
+  assertPrefix(userId, key, avatarPrefix(userId));
 }
 
 function safeFilename(name: string) {
@@ -70,6 +82,49 @@ export async function presignUpload(
     { expiresIn: 300 },
   );
   return { putUrl, key };
+}
+
+export async function presignAvatar(
+  userId: string,
+  input: { filename: string; contentType: string; size: number },
+) {
+  const error = validateAvatar(input.contentType, input.size);
+  if (error) throw Object.assign(new Error(error), { name: "UploadValidationError" });
+
+  const { S3_BUCKET } = getS3Config();
+  const key = `${avatarPrefix(userId)}${randomUUID()}__${safeFilename(input.filename)}`;
+  const putUrl = await getSignedUrl(
+    getClient(),
+    new PutObjectCommand({ Bucket: S3_BUCKET, Key: key, ContentType: input.contentType }),
+    { expiresIn: 300 },
+  );
+  return { putUrl, key };
+}
+
+export async function avatarViewUrl(userId: string, key: string) {
+  assertAvatarOwnership(userId, key);
+  const { S3_BUCKET } = getS3Config();
+  return getSignedUrl(
+    getClient(),
+    new GetObjectCommand({ Bucket: S3_BUCKET, Key: key }),
+    { expiresIn: 3600 },
+  );
+}
+
+export async function avatarObject(userId: string, key: string) {
+  assertAvatarOwnership(userId, key);
+  const { S3_BUCKET } = getS3Config();
+  const head = await getClient().send(new HeadObjectCommand({ Bucket: S3_BUCKET, Key: key }));
+  return {
+    contentType: head.ContentType ?? "",
+    sizeBytes: head.ContentLength ?? 0,
+  };
+}
+
+export async function deleteAvatar(userId: string, key: string) {
+  assertAvatarOwnership(userId, key);
+  const { S3_BUCKET } = getS3Config();
+  await getClient().send(new DeleteObjectCommand({ Bucket: S3_BUCKET, Key: key }));
 }
 
 export async function listFiles(userId: string): Promise<FileRecord[]> {

@@ -1,6 +1,9 @@
 export const MAX_IMAGE_BYTES = 50 * 1024 * 1024; // 50 MB
 export const MAX_VIDEO_BYTES = 500 * 1024 * 1024; // 500 MB
 export const MAX_OTHER_BYTES = 100 * 1024 * 1024; // 100 MB
+export const MAX_AVATAR_BYTES = 5 * 1024 * 1024; // 5 MB
+
+const AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 const ALLOWED_PREFIXES = ["image/", "video/"];
 const ALLOWED_EXACT = [
@@ -33,6 +36,18 @@ export function validateUpload(mime: string, size: number): string | null {
   if (size <= 0) return "Arquivo vazio.";
   if (size > limit) {
     return `Arquivo muito grande (máximo ${Math.round(limit / 1024 / 1024)} MB).`;
+  }
+  return null;
+}
+
+/** Retorna a mensagem de erro ou null quando a foto de perfil é aceita. */
+export function validateAvatar(mime: string, size: number): string | null {
+  if (!AVATAR_TYPES.includes(mime)) {
+    return "Envie uma imagem JPEG, PNG, WebP ou GIF.";
+  }
+  if (size <= 0) return "Arquivo vazio.";
+  if (size > MAX_AVATAR_BYTES) {
+    return `Imagem muito grande (máximo ${Math.round(MAX_AVATAR_BYTES / 1024 / 1024)} MB).`;
   }
   return null;
 }

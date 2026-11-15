@@ -9,11 +9,16 @@ de login verificado pelo Cognito.
 - Identificadores de login: Username e Email (email como alias).
 - Cadastro self-service habilitado.
 - Atributos obrigatórios: `name` e `email`, sem `nickname` obrigatório.
+- Atributos customizados para o perfil: `custom:description` e
+  `custom:avatar_key` (ambos string e mutáveis). Precisam ser criados antes de
+  usar o cadastro com descrição e a edição de perfil; não podem ser removidos
+  depois. O cadastro envia `custom:description` apenas quando o campo é
+  preenchido.
 - Verificação automática de email habilitada, com código de confirmação.
 - MFA desativado para o fluxo atual.
 - Nenhum trigger de auto-confirmação.
-- Política de senha: mínimo de 8 caracteres, maiúsculas, minúsculas, números e
-  símbolos. A aplicação também limita a 256 caracteres e não aceita espaços.
+- Política de senha definida no próprio User Pool; a aplicação não valida
+  requisitos localmente e apenas repassa a mensagem de erro do Cognito.
 
 As opções de identificador e atributos obrigatórios são definidas na criação
 do pool. Um pool criado somente com username precisa ser substituído para
@@ -23,6 +28,8 @@ adotar email como alias.
 
 - Fluxo `ALLOW_USER_PASSWORD_AUTH` habilitado.
 - Prevenção de erros de existência de usuário habilitada.
+- Permissões de leitura/escrita para `name`, `custom:description` e
+  `custom:avatar_key` nas configurações de atributos do App Client.
 - `COGNITO_CLIENT_SECRET` configurado no servidor se o cliente tiver segredo.
 - Sem necessidade de Hosted UI, domínio ou callback neste fluxo via SDK.
 
@@ -30,8 +37,9 @@ adotar email como alias.
 
 As variáveis estão em `.env.example`; os valores locais ficam em `.env.local`.
 O cadastro consulta `ListUsers` antes de enviar `SignUp`, incluindo usuários
-ainda não confirmados. Essa consulta exige uma identidade IAM do servidor com
-a seguinte permissão, substituindo região, conta e ID do pool:
+ainda não confirmados, e o perfil usa `AdminGetUser` para a data de criação.
+Essas consultas exigem uma identidade IAM do servidor com as seguintes
+permissões, substituindo região, conta e ID do pool:
 
 ```json
 {
@@ -39,7 +47,7 @@ a seguinte permissão, substituindo região, conta e ID do pool:
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": "cognito-idp:ListUsers",
+      "Action": ["cognito-idp:ListUsers", "cognito-idp:AdminGetUser"],
       "Resource": "arn:aws:cognito-idp:REGIAO:CONTA:userpool/ID_DO_POOL"
     }
   ]
@@ -51,6 +59,11 @@ Identity Center e `AWS_PROFILE`). Na EC2, use a IAM Role da instância. O SDK
 usa a cadeia padrão de credenciais; nenhum segredo é enviado ao navegador.
 Sem credenciais ou permissão, o cadastro é bloqueado com uma mensagem específica.
 Confirmação, login e logout continuam usando as APIs públicas do Cognito.
+
+A data de criação do perfil vem de `AdminGetUser`. Adicione `cognito-idp:AdminGetUser`
+ao mesmo recurso do User Pool. Sem essa permissão, o restante do perfil continua
+funcionando, mas a data aparece em branco. Leitura e edição dos próprios
+atributos e a troca de senha usam o access token, sem IAM adicional.
 
 Emails novos são normalizados para minúsculas. A busca por email no Cognito é
 sensível a maiúsculas/minúsculas: contas anteriores com email em outro formato

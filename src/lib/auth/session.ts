@@ -28,8 +28,12 @@ export async function clearSession() {
   store.set(ACCESS_COOKIE, "", { ...cookieOptions(0), expires: new Date(0) });
 }
 
+export async function getAccessToken() {
+  return (await cookies()).get(ACCESS_COOKIE)?.value ?? null;
+}
+
 export async function getAuthenticatedUser() {
-  const accessToken = (await cookies()).get(ACCESS_COOKIE)?.value;
+  const accessToken = await getAccessToken();
   if (!accessToken) return null;
 
   try {

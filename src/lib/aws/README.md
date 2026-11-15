@@ -23,7 +23,7 @@ exclusão valida o prefixo do usuário antes de apagar.
 Variáveis: `AWS_REGION` e `S3_BUCKET` (ver `.env.example`). O bucket precisa de
 CORS para `http://localhost:3000` (`PUT`, `GET`, `HEAD`) e a identidade AWS do
 servidor precisa de `s3:ListBucket` no bucket e `s3:PutObject`, `s3:GetObject`
-e `s3:DeleteObject` em `uploads/*`. Detalhes em `infra/README.md`.
+e `s3:DeleteObject` em `uploads/*` e `avatars/*`. Detalhes em `infra/README.md`.
 
 Os adaptadores fornecem cadastro, confirmação, login e logout. A sessão usa
 cookie HttpOnly, Secure em produção e SameSite=Lax; as mutações usam Server

@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAuthenticatedUser } from "@/lib/auth/session";
-import { presignUpload } from "@/lib/aws/s3";
+import { presignAvatar, presignUpload } from "@/lib/aws/s3";
 
 const schema = z.object({
   filename: z.string().trim().min(1).max(255),
   contentType: z.string().trim().min(1).max(255),
   size: z.number().int().positive(),
+  scope: z.enum(["gallery", "avatar"]).default("gallery"),
 });
 
 function errorName(error: unknown) {
@@ -27,7 +28,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    return NextResponse.json(await presignUpload(user.userId, parsed.data));
+    const { scope, ...input } = parsed.data;
+    const result = scope === "avatar"
+      ? await presignAvatar(user.userId, input)
+      : await presignUpload(user.userId, input);
+    return NextResponse.json(result);
   } catch (error) {
     const name = errorName(error);
     if (name === "UploadValidationError") {
