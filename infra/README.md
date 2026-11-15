@@ -38,6 +38,19 @@ EC2 → HTTPS → Cognito User Pool + App Client
 - Cognito é um serviço gerenciado regional, não um processo dentro da VPC.
 - Proteger dashboard e operações de perfil no servidor, não apenas na interface.
 
+## S3 (galeria)
+
+- Criar um bucket privado na mesma região do app, com Block Public Access,
+  criptografia padrão e ACLs desabilitadas.
+- CORS para a origem do app (`http://localhost:3000` em desenvolvimento):
+  `PUT`, `GET` e `HEAD`, com `ETag` exposto.
+- Identidade do servidor com `s3:ListBucket` no bucket e `s3:PutObject`,
+  `s3:GetObject` e `s3:DeleteObject` em `uploads/*`.
+- Prefixo por usuário (`uploads/{userId}/`), verificado no servidor antes de
+  assinar ou excluir. Sem banco de metadados: a listagem vem do próprio S3.
+- Configurar `S3_BUCKET` em `.env.local`. Adicionar a origem de produção ao
+  CORS e considerar expiração/ciclo de vida para objetos órfãos.
+
 ## Pendências
 
 Escolher persistência do perfil, estratégia de imagem (URL ou upload), criar
