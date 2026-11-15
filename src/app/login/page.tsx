@@ -7,7 +7,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <main className="min-h-screen flex items-center justify-center bg-parchment p-6">
       <div className="w-full max-w-sm animate-fade-up rounded-3xl border border-sand bg-cream p-6 shadow-[0_20px_60px_-30px_rgba(67,48,31,0.4)]">
-        <h1 className="text-xl font-semibold text-espresso">Entrar na TES</h1>
+        <h1 className="text-xl font-semibold text-espresso">Entrar na Galeria</h1>
         <p className="mt-1 text-sm text-stone-500">Acesse sua conta.</p>
         {confirmed === "1" && (
           <p role="status" className="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-700">

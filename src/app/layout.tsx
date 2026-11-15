@@ -10,7 +10,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TES — Aplicação",
+  title: "Galeria - TES",
   description: "Galeria privada com autenticação AWS Cognito e armazenamento S3.",
 };
 
