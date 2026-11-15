@@ -82,6 +82,18 @@ resource "aws_vpc_security_group_ingress_rule" "web" {
   cidr_ipv4         = "0.0.0.0/0"
 }
 
+resource "aws_vpc_security_group_ingress_rule" "ssh" {
+  count = var.admin_ipv4_cidr == null ? 0 : 1
+
+  security_group_id = aws_security_group.web.id
+  description       = "SSH administrative IPv4 only"
+  ip_protocol       = "tcp"
+  from_port         = 22
+  to_port           = 22
+  cidr_ipv4         = var.admin_ipv4_cidr
+}
+
+# Saída para instalar dependências e acessar serviços como Cognito.
 resource "aws_vpc_security_group_egress_rule" "outbound" {
   security_group_id = aws_security_group.web.id
   description       = "Outbound access for dependencies and AWS services"

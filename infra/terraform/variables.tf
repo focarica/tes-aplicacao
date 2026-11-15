@@ -22,3 +22,17 @@ variable "availability_zone" {
   type        = string
   default     = null
 }
+
+variable "admin_ipv4_cidr" {
+  description = "IPv4 público administrativo com /32 para SSH; null mantém SSH fechado."
+  type        = string
+  default     = null
+
+  validation {
+    condition = var.admin_ipv4_cidr == null ? true : (
+      can(cidrnetmask(var.admin_ipv4_cidr)) &&
+      can(regex("/32$", var.admin_ipv4_cidr))
+    )
+    error_message = "Informe um IPv4 válido com /32 ou null. SSH para redes amplas não é permitido."
+  }
+}
