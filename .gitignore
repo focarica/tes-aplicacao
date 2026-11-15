@@ -8,3 +8,13 @@
 next-env.d.ts
 *.log
 .DS_Store
+
+# Terraform: estado, provedores e valores locais. Versionar .terraform.lock.hcl.
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+*.tfplan
+crash.log
+crash.*.log
