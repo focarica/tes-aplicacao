@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import { MAX_IMAGE_BYTES, MAX_OTHER_BYTES, MAX_VIDEO_BYTES } from "@/lib/media";
 
 type Props = { onUploaded: () => void };
 
@@ -141,10 +142,22 @@ export default function Uploader({ onUploaded }: Props) {
           accept="image/*,video/*,.pdf,.zip,.txt,.doc,.docx"
           disabled={busy}
           onChange={(event) => handleFiles(event.target.files)}
-          className="text-sm text-stone-600 file:mr-3 file:rounded-xl file:border-0 file:bg-espresso file:px-4 file:py-2 file:font-medium file:text-amber-50 hover:file:bg-espresso-light file:cursor-pointer disabled:cursor-not-allowed"
+          className="sr-only"
+          aria-label="Selecionar arquivos para upload"
         />
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          disabled={busy}
+          className="inline-flex items-center gap-2 rounded-xl bg-espresso px-4 py-2 text-sm font-medium text-amber-50 transition-colors hover:bg-espresso-light disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <span aria-hidden="true" className="text-lg leading-none">+</span>
+          Fazer upload de arquivos
+        </button>
         <span className="text-xs text-stone-500">
-          Imagens ≤50MB · Vídeos ≤500MB
+          Imagens ≤{Math.round(MAX_IMAGE_BYTES / 1024 / 1024)} MB · Vídeos ≤
+          {Math.round(MAX_VIDEO_BYTES / 1024 / 1024)} MB · Documentos ≤
+          {Math.round(MAX_OTHER_BYTES / 1024 / 1024)} MB
         </span>
       </div>
 

@@ -8,6 +8,7 @@
   --color-latte: #b98d4f;
   --color-espresso: #43301f;
   --color-espresso-light: #5f452e;
+  --font-title: var(--font-geist-mono);
 }
 
 body {
@@ -28,4 +29,133 @@ input[type="file"]::file-selector-button,
 button:disabled,
 a[aria-disabled="true"] {
   cursor: not-allowed;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes title-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes modal-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 240ms ease-out both;
+}
+
+.animate-pop {
+  animation: pop 160ms ease-out both;
+}
+
+.animate-title-in {
+  animation: title-in 220ms ease-out both;
+}
+
+.animate-card-in {
+  animation: card-in 260ms ease-out both;
+}
+
+.animate-fade-in {
+  animation: fade-in 160ms ease-out both;
+}
+
+.animate-fade-out {
+  animation: fade-out 160ms ease-in both;
+}
+
+.animate-modal-in {
+  animation: modal-in 180ms ease-out both;
+}
+
+.animate-modal-out {
+  animation: modal-out 160ms ease-in both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-pop,
+  .animate-card-in,
+  .animate-title-in,
+  .animate-fade-in,
+  .animate-fade-out,
+  .animate-modal-in,
+  .animate-modal-out {
+    animation: none;
+  }
 }

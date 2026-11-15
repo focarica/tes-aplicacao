@@ -3,6 +3,8 @@
 import { useState } from "react";
 import type { FileRecord } from "@/models/file.model";
 import { kindOf } from "@/lib/media";
+import { FilePreviewModal } from "@/components/FilePreviewModal";
+import { LoadedImage } from "@/components/LoadedImage";
 
 function formatBytes(n: number) {
   if (n < 1024) return `${n} B`;
@@ -17,6 +19,7 @@ export default function FileCard({ file, onDeleted }: Props) {
   const kind = kindOf(file.mimeType);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [preview, setPreview] = useState(false);
 
   async function remove() {
     if (!window.confirm(`Excluir "${file.filename}"? Esta ação não pode ser desfeita.`)) {
@@ -42,12 +45,11 @@ export default function FileCard({ file, onDeleted }: Props) {
     <div className="overflow-hidden rounded-2xl border border-sand bg-cream shadow-sm">
       <div className="aspect-video bg-sand flex items-center justify-center overflow-hidden">
         {kind === "image" && file.viewUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <LoadedImage
             src={file.viewUrl}
             alt={file.filename}
-            className="h-full w-full object-cover"
-            loading="lazy"
+            className="h-full w-full"
+            imgClassName="h-full w-full object-cover"
           />
         ) : kind === "video" && file.viewUrl ? (
           <video
@@ -77,14 +79,13 @@ export default function FileCard({ file, onDeleted }: Props) {
         </p>
         <div className="mt-2 flex gap-2">
           {file.viewUrl && (
-            <a
-              href={file.viewUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-lg bg-espresso px-3 py-1.5 text-xs text-amber-50 hover:bg-espresso-light"
+            <button
+              type="button"
+              onClick={() => setPreview(true)}
+              className="rounded-lg bg-espresso px-3 py-1.5 text-xs text-amber-50 transition-colors hover:bg-espresso-light"
             >
               Abrir
-            </a>
+            </button>
           )}
           <button
             type="button"
@@ -97,6 +98,9 @@ export default function FileCard({ file, onDeleted }: Props) {
         </div>
         {error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}
       </div>
+      {preview && file.viewUrl && (
+        <FilePreviewModal file={file} onClose={() => setPreview(false)} />
+      )}
     </div>
   );
 }

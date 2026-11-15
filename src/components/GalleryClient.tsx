@@ -3,8 +3,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Uploader from "@/components/Uploader";
 import FileCard from "@/components/FileCard";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import type { FileRecord } from "@/models/file.model";
 import { kindOf } from "@/lib/media";
+import { preloadGalleryImages } from "@/lib/images";
 
 type GalleryTab = "all" | "image" | "video" | "other";
 
@@ -29,7 +31,9 @@ export default function GalleryClient() {
       const response = await fetch("/api/files", { cache: "no-store" });
       const json = await response.json();
       if (!response.ok) throw new Error(json.error ?? "Não foi possível carregar os arquivos.");
-      setFiles(json.files as FileRecord[]);
+      const files = json.files as FileRecord[];
+      await preloadGalleryImages(files);
+      setFiles(files);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "Não foi possível carregar os arquivos.");
     } finally {
@@ -121,7 +125,7 @@ export default function GalleryClient() {
         </div>
       </div>
 
-      {loading && <p className="text-sm text-stone-500">Carregando…</p>}
+      {loading && <LoadingOverlay />}
       {error && <p className="text-sm text-red-600">{error}</p>}
       {!loading && !error && files.length === 0 && (
         <p className="rounded-2xl border border-dashed border-sand-dark bg-cream p-8 text-center text-sm text-stone-500">
@@ -150,8 +154,14 @@ export default function GalleryClient() {
         </p>
       )}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((file) => (
-          <FileCard key={file.id} file={file} onDeleted={load} />
+        {filtered.map((file, index) => (
+          <div
+            key={file.id}
+            className="animate-card-in"
+            style={{ animationDelay: `${Math.min(index, 12) * 50}ms` }}
+          >
+            <FileCard file={file} onDeleted={load} />
+          </div>
         ))}
       </div>
       {files.length > 0 && (
