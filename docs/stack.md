@@ -21,9 +21,10 @@ Versões conforme `package.json` (as faixas `^` aceitam atualizações compatív
 | Cognito (`@aws-sdk/client-cognito-identity-provider`) | Cadastro, confirmação por e-mail, login, perfil e troca de senha |
 | `aws-jwt-verify` | Verificação criptográfica do access token no servidor |
 | S3 (`@aws-sdk/client-s3`, `@aws-sdk/s3-request-presigner`) | Armazenamento privado e URLs pré-assinadas de upload e visualização |
-| IAM | Role da EC2 com as permissões mínimas para Cognito e S3 (ver [infra/README.md](../infra/README.md)) |
+| IAM | Role `ec2-app-role` da EC2, com as permissões para Cognito e S3 (ver [infra/README.md](../infra/README.md)) |
 | VPC, sub-rede, Internet Gateway, Security Group | Rede da aplicação, definida em Terraform |
-| EC2 | Hospedagem da aplicação, atrás do nginx com HTTPS |
+| EC2 | Hospedagem da aplicação, atrás do nginx com HTTPS, com IP elástico 32.194.55.125 |
+| AWS Budgets | Alerta de custo de US$ 20 |
 
 ## Qualidade e ferramentas
 

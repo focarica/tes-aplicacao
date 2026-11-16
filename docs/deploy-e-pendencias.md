@@ -9,7 +9,7 @@ Situação em **16/11/2026**.
 | Aplicação (cadastro, login, galeria, perfil, API) | Implementada; validada com testes que simulam a AWS |
 | Rede AWS em Terraform | Aplicada e validada em uma conta de teste |
 | Cognito e S3 | Configuração documentada; criados manualmente (não estão no Terraform) |
-| EC2, IP público, proxy reverso e HTTPS | Publicada em <https://32-194-55-125.sslip.io>: nginx com certificado Let's Encrypt, e HTTP redireciona para HTTPS |
+| EC2, IP público, proxy reverso e HTTPS | Publicada em <https://32-194-55-125.sslip.io>: EC2 com IP elástico 32.194.55.125 e IAM Role `ec2-app-role`, nginx com certificado Let's Encrypt, e HTTP redireciona para HTTPS. Diagrama em [arquitetura.md](arquitetura.md#infraestrutura) |
 | Versão publicada | Anterior ao backend de perfil: `/api/profile` responde 404 no servidor (conferido em 16/11/2026) |
 | Teste de ponta a ponta no endereço publicado | Pendente |
 

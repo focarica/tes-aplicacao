@@ -142,20 +142,22 @@ O prefixo do usuário é verificado no servidor antes de assinar URLs ou excluir
 
 ## Infraestrutura
 
-```mermaid
-flowchart LR
-    I((Internet)) -->|80/443| SG[Security Group tes-sg-web]
-    subgraph VPC 10.0.0.0/16
-        subgraph Sub-rede pública 10.0.1.0/24
-            EC2[EC2: Next.js + nginx]
-        end
-    end
-    SG --- EC2
-    EC2 --> COG[(Cognito)]
-    EC2 --> S3[(S3)]
-```
+![Arquitetura AWS da aplicação: usuário acessa por HTTPS o Internet Gateway da VPC tes-vpc; na sub-rede pública, a EC2 com nginx e Next.js e IP elástico 32.194.55.125 usa a IAM Role ec2-app-role para acessar o Cognito e o bucket S3 privado tes-app-es2; o AWS Budgets tem alerta de US$ 20](img/arquitetura-aws.jpeg)
 
-O Terraform (`infra/terraform`) cria somente a **rede**: VPC, sub-rede pública, Internet Gateway, tabela de rotas e Security Group (portas 80 e 443; SSH opcional). EC2, Cognito e S3 são criados manualmente. Detalhes em [infra/README.md](../infra/README.md).
+| Peça | Configuração em produção |
+| --- | --- |
+| Região | `us-east-1` (Norte da Virgínia) |
+| VPC e sub-rede | `tes-vpc` (10.0.0.0/16) e sub-rede pública `tes-subnet-public` (10.0.1.0/24) |
+| Rotas | Tabela da sub-rede pública: `0.0.0.0/0` para o Internet Gateway |
+| Security Group | `tes-sg-web`: portas 80 e 443; SSH opcional |
+| EC2 | nginx na porta 443 repassa para o Next.js; IP elástico 32.194.55.125 |
+| IAM | Role `ec2-app-role`, com as permissões da EC2 para o Cognito e o S3 |
+| Cognito | User Pool com os usuários e o perfil |
+| S3 | Bucket privado `tes-app-es2` |
+| Custos | AWS Budgets com alerta de US$ 20 |
+| Endereço | <https://32-194-55-125.sslip.io> |
+
+O Terraform (`infra/terraform`) cria somente a **rede**: VPC, sub-rede pública, Internet Gateway, tabela de rotas e Security Group (portas 80 e 443; SSH opcional). EC2, IAM, Cognito e S3 são criados manualmente. Detalhes em [infra/README.md](../infra/README.md).
 
 ## Decisões de projeto
 
