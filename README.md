@@ -183,16 +183,10 @@ API /api/profile ───────┴─> controller ─> serviço ─> repo
 | Pendência | Por que importa |
 | --- | --- |
 | Teste manual do perfil com Cognito e S3 reais | Confirma de ponta a ponta o que os testes automatizados simulam |
-| Revisão e merge do backend de perfil na `dev` | O código precisa da aprovação de outro integrante |
-| 8 testes e 5 avisos de lint já quebrados na `dev` | `npm test` e `npm run lint` precisam passar antes da entrega |
-| Merge da `dev` na `main` | A `main` é a branch padrão e ainda tem só o esqueleto |
 | Rede aplicada na conta AWS final | O Terraform foi aplicado só em uma conta de teste, e o estado fica na máquina de quem o aplicou |
 | Cognito e S3 na conta final | User Pool com os atributos do perfil e bucket com CORS para o endereço de produção |
 | EC2 com IP público e IAM Role | O enunciado exige EC2 e IP público; sem a role, o cadastro falha |
 | Implantação, proxy reverso e HTTPS | O Security Group libera só as portas 80 e 443, e o cookie de sessão exige HTTPS em produção |
-| Título e introdução deste README | Ainda descrevem o esqueleto inicial |
-| Envio dos links do repositório e da aplicação publicada | Exigência da entrega |
-
 ## Próximos passos para completar, integrar e publicar
 
 1. **Testar o perfil manualmente.** Copiar `.env.example` para `.env.local`,
@@ -208,21 +202,15 @@ API /api/profile ───────┴─> controller ─> serviço ─> repo
    })).json();
    ```
 
-2. **Revisar e integrar o código.**
-   - Revisar o PR do backend de perfil e fazer o merge na `dev` depois da
-     aprovação.
-   - Corrigir os testes quebrados (usar uma senha válida pela política atual) e
-     os avisos de lint, até `npm test` e `npm run lint` passarem.
-   - Fazer o merge da `dev` na `main`.
 
-3. **Preparar a conta AWS final.**
+2. **Preparar a conta AWS final.**
    - Aplicar a rede com `infra/terraform` e guardar os outputs `vpc_id`,
      `subnet_id` e `security_group_id`.
    - Criar o User Pool e o App Client conforme `infra/cognito/README.md`.
    - Criar o bucket privado conforme `infra/README.md`, com CORS para a origem
      de produção.
 
-4. **Criar a EC2** na sub-rede pública, com o grupo `tes-sg-web`, um IP elástico
+3. **Criar a EC2** na sub-rede pública, com o grupo `tes-sg-web`, um IP elástico
    e uma IAM Role com:
    - `cognito-idp:ListUsers` e `cognito-idp:AdminGetUser` no User Pool;
    - `s3:ListBucket` no bucket e `s3:PutObject`, `s3:GetObject` e
@@ -231,7 +219,7 @@ API /api/profile ───────┴─> controller ─> serviço ─> repo
    O SSH fica fechado por padrão; para usá-lo, definir `admin_ipv4_cidr` no
    Terraform.
 
-5. **Implantar a aplicação na EC2**, com Node.js 22:
+4. **Implantar a aplicação na EC2**, com Node.js 22:
 
    ```bash
    git clone https://github.com/focarica/tes-aplicacao.git
@@ -247,12 +235,11 @@ API /api/profile ───────┴─> controller ─> serviço ─> repo
    serviço (por exemplo, com systemd), para voltar sozinho quando a máquina
    reiniciar.
 
-6. **Configurar proxy reverso e HTTPS.** Um nginx na porta 443 encaminha as
+5. **Configurar proxy reverso e HTTPS.** Um nginx na porta 443 encaminha as
    requisições para `127.0.0.1:3000`, e a porta 80 redireciona para HTTPS. O
    certificado pode ser emitido com Let's Encrypt (certbot) para um domínio
    apontado para o IP elástico. Sem HTTPS, o navegador descarta o cookie de
    sessão e o login não se mantém.
 
-7. **Conferir e entregar.** No endereço público, testar cadastro, confirmação
-   por e-mail, login, perfil, foto e galeria. Depois, enviar os links do
-   repositório e da aplicação publicada.
+6. **Conferir e entregar.** No endereço público, testar cadastro, confirmação
+   por e-mail, login, perfil, foto e galeria. 
