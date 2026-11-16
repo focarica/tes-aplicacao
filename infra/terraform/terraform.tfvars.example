@@ -1,0 +1,8 @@
+aws_region   = "us-east-1"
+project_name = "tes"
+
+# Opcional: substitua pelo IPv4 público real do administrador.
+# admin_ipv4_cidr = "203.0.113.25/32"
+
+# Opcional: zona permitida na região escolhida.
+# availability_zone = "us-east-1a"

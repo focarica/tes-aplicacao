@@ -10,7 +10,6 @@ import type {
   SignUpResult,
 } from "@/models/auth.model";
 
-/** Contrato futuro do adaptador Cognito e da gestão de sessão no servidor. */
 export interface AuthService {
   signUp(input: SignUpInput): Promise<SignUpResult>;
   confirmSignUp(input: ConfirmSignUpInput): Promise<void>;
@@ -18,4 +17,11 @@ export interface AuthService {
   signOut(): Promise<void>;
   requireUser(): Promise<AuthenticatedUser>;
   changePassword(input: ChangePasswordInput): Promise<void>;
+}
+
+export interface CognitoAuthProvider {
+  signUp(input: SignUpInput): Promise<SignUpResult>;
+  confirmSignUp(input: ConfirmSignUpInput): Promise<void>;
+  signIn(input: SignInInput): Promise<SignInResult>;
+  signOut(accessToken: string): Promise<void>;
 }
