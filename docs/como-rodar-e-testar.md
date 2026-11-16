@@ -92,7 +92,7 @@ O alias `server-only` aponta para `tests/mocks/server-only.ts` em `vitest.config
 | `npm test` | 116 de 124 passam; **8 falham** (ver abaixo) |
 | `npm run lint` | 0 erros, **5 avisos** (`<img>` em vez de `next/image`), e o script falha por `--max-warnings=0` |
 
-Os 8 testes que falham, em `tests/auth.test.ts` e `tests/signup-action.test.ts`, usam a senha `"senha-simples"`, que não cumpre a política atual (`cognitoPasswordSchema` exige maiúscula, número e símbolo). A validação do cadastro rejeita o dado de teste, e não o contrário. A correção é atualizar a senha usada nos testes para uma que cumpra a política, por exemplo `"Senha-Forte1!"`. Veja [deploy-e-pendencias.md](deploy-e-pendencias.md#problemas-conhecidos).
+Os 8 testes que falham, em `tests/auth.test.ts` e `tests/signup-action.test.ts`, usam a senha `"senha-simples"`, que não cumpre a política atual (`cognitoPasswordSchema` exige maiúscula, número e símbolo). A validação do cadastro rejeita o dado de teste, e não o contrário. A correção é atualizar a senha usada nos testes para uma que cumpra a política, por exemplo `"Senha-Forte1!"`.
 
 ### Testes da infraestrutura
 

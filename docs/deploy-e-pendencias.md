@@ -76,15 +76,6 @@ No endereço público, teste cadastro, confirmação por e-mail, login, perfil, 
 - Estado do Terraform local: um único responsável deve aplicar a rede, ou a equipe deve configurar backend remoto com bloqueio.
 - O Terraform cobre apenas a rede; Cognito, S3, EC2 e IAM são manuais.
 
-## Problemas conhecidos
-
-Encontrados ao rodar as verificações na branch `dev` em 16/11/2026:
-
-| Problema | Detalhe | Correção sugerida |
-| --- | --- | --- |
-| 8 testes falham | `tests/auth.test.ts` (1) e `tests/signup-action.test.ts` (7) usam a senha `"senha-simples"`, que não cumpre a política de `cognitoPasswordSchema` | Trocar a senha dos testes por uma válida, por exemplo `"Senha-Forte1!"` |
-| `npm run lint` falha | 5 avisos `@next/next/no-img-element` em `GalleryClient`, `Uploader`, `password-field` e `PasswordForm`, com `--max-warnings=0` | Usar `next/image` ou justificar com um `eslint-disable` pontual (as URLs são assinadas do S3) |
-
 ## Histórico: backend de perfil
 
 O backend de perfil foi integrado sem banco de dados novo, reaproveitando os adaptadores existentes (`src/lib/auth/profile.ts`, `src/lib/aws/s3.ts`, `src/lib/auth/session.ts`). As Server Actions de perfil passaram a usar o controller sem mudar o comportamento das telas (os testes de `tests/profile-actions.test.ts` passam antes e depois). Não houve variável de ambiente nem permissão IAM nova. Arquitetura em [arquitetura.md](arquitetura.md).
