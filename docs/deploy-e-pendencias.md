@@ -1,0 +1,81 @@
+# Deploy, pendências e limitações
+
+Situação em **16/11/2026**.
+
+## Estado do projeto
+
+| Item | Estado |
+| --- | --- |
+| Aplicação (cadastro, login, galeria, perfil, API) | Implementada; validada com testes que simulam a AWS |
+| Rede AWS em Terraform | Aplicada na conta de produção; conta e estado confirmados pela equipe |
+| Cognito e S3 | Configuração documentada; criados manualmente (não estão no Terraform) |
+| EC2, IP público, proxy reverso e HTTPS | Publicada em <https://32-194-55-125.sslip.io>: EC2 com IP elástico 32.194.55.125 e IAM Role `ec2-app-role`, nginx com certificado Let's Encrypt, e HTTP redireciona para HTTPS. Diagrama em [arquitetura.md](arquitetura.md#infraestrutura) |
+| Versão publicada | Anterior ao backend de perfil: `/api/profile` responde 404 no servidor (conferido em 16/11/2026) |
+| Teste de ponta a ponta no endereço publicado | Feito pela equipe |
+
+## Publicar uma nova versão
+
+Na EC2, dentro da pasta do projeto:
+
+```bash
+git pull
+npm ci && npm run build
+cp -r public .next/standalone/
+cp -r .next/static .next/standalone/.next/
+```
+
+Depois, reinicie o serviço que executa `node .next/standalone/server.js`. As variáveis de ambiente e as permissões não mudam.
+
+## Roteiro de deploy
+
+Referência para montar o ambiente do zero.
+
+### 1. Preparar a conta AWS
+
+- Aplicar a rede (`infra/terraform`) e guardar `vpc_id`, `subnet_id` e `security_group_id`. Ver [infra/README.md](../infra/README.md).
+- Criar o User Pool e o App Client conforme [infra/cognito/README.md](../infra/cognito/README.md).
+- Criar o bucket privado conforme [infra/README.md](../infra/README.md#s3-galeria), com CORS para a origem de produção.
+
+### 2. Criar a EC2
+
+Na sub-rede pública, com o grupo `tes-sg-web`, IP elástico e uma IAM Role com:
+
+- `cognito-idp:ListUsers` e `cognito-idp:AdminGetUser` no User Pool;
+- `s3:ListBucket` no bucket e `s3:PutObject`, `s3:GetObject`, `s3:DeleteObject` em `uploads/*` e `avatars/*`.
+
+O SSH fica fechado por padrão; para usá-lo, defina `admin_ipv4_cidr` no Terraform.
+
+### 3. Implantar a aplicação (Node.js 22)
+
+```bash
+git clone https://github.com/focarica/tes-aplicacao.git
+cd tes-aplicacao
+npm ci && npm run build
+cp -r public .next/standalone/
+cp -r .next/static .next/standalone/.next/
+PORT=3000 HOSTNAME=127.0.0.1 node .next/standalone/server.js
+```
+
+As variáveis do `.env.example` ficam no ambiente do serviço, **sem credenciais AWS**: a IAM Role da instância as fornece. Execute o último comando como serviço (por exemplo, systemd) para voltar sozinho após reiniciar.
+
+### 4. Proxy reverso e HTTPS
+
+nginx na porta 443 encaminha para `127.0.0.1:3000`; a porta 80 redireciona para HTTPS. Emita o certificado com Let's Encrypt (certbot) para um domínio apontado para o IP elástico. Sem HTTPS o navegador descarta o cookie de sessão e o login não se mantém.
+
+### 5. Conferir e entregar
+
+No endereço público, teste cadastro, confirmação por e-mail, login, perfil, foto e galeria.
+
+## Limitações da versão atual
+
+- Sem renovação automática de sessão; ao expirar, é preciso entrar de novo.
+- MFA e outros desafios de autenticação bloqueiam o login.
+- O logout encerra a sessão no Cognito e remove o cookie, mas JWTs já emitidos podem continuar válidos até expirar para verificadores offline.
+- Recuperação de senha e alteração de username ou e-mail estão fora do escopo.
+- A data de criação do perfil depende de `AdminGetUser`; sem a permissão, aparece em branco.
+- Estado do Terraform local: um único responsável deve aplicar a rede, ou a equipe deve configurar backend remoto com bloqueio.
+- O Terraform cobre apenas a rede; Cognito, S3, EC2 e IAM são manuais.
+
+## Histórico: backend de perfil
+
+O backend de perfil foi integrado sem banco de dados novo, reaproveitando os adaptadores existentes (`src/lib/auth/profile.ts`, `src/lib/aws/s3.ts`, `src/lib/auth/session.ts`). As Server Actions de perfil passaram a usar o controller sem mudar o comportamento das telas (os testes de `tests/profile-actions.test.ts` passam antes e depois). Não houve variável de ambiente nem permissão IAM nova. Arquitetura em [arquitetura.md](arquitetura.md).
