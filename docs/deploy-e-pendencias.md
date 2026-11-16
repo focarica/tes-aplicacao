@@ -13,13 +13,6 @@ Situação em **16/11/2026**.
 | Versão publicada | Anterior ao backend de perfil: `/api/profile` responde 404 no servidor (conferido em 16/11/2026) |
 | Teste de ponta a ponta no endereço publicado | Feito pela equipe |
 
-## Pendências
-
-| Pendência | Por que importa |
-| --- | --- |
-| Publicar de novo a partir da `main` atual | O servidor roda um build anterior ao merge do backend de perfil; `/api/profile` e `/api/profile/avatar` respondem 404 |
-| 8 testes e 5 avisos de lint | `npm test` e `npm run lint` precisam passar (ver [Problemas conhecidos](#problemas-conhecidos)) |
-
 ## Publicar uma nova versão
 
 Na EC2, dentro da pasta do projeto:
