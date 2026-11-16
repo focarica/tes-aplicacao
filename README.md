@@ -35,11 +35,12 @@ npm start
 src/
   app/             Views, layouts e entradas HTTP/Server Actions
     dashboard/     Galeria e perfil do usuário autenticado
+    api/profile/   API REST do perfil (consulta, edição e foto)
   components/      Componentes de interface (auth e galeria)
   models/          Entidades e contratos de entrada/saída
-  controllers/     Validação e coordenação das requisições (reservado)
-  services/        Contratos de casos de uso e autenticação
-  repositories/    Contrato de persistência do perfil
+  controllers/     Sessão, validação e erros do perfil (actions e API)
+  services/        Contrato de autenticação e serviço de perfil
+  repositories/    Contrato e implementação Cognito do perfil
   lib/auth/        Adaptadores Cognito, sessão e autorização
   lib/aws/         Adaptador S3 (presign, listagem e exclusão)
   lib/media.ts     Classificação e validação de uploads
@@ -48,7 +49,10 @@ infra/             Terraform da rede AWS e configuração de Cognito/S3
 
 O fluxo de autenticação usa views, Server Actions com validação e adaptadores
 Cognito. O perfil usa os atributos do próprio User Pool e a foto fica no S3,
-sem banco de dados adicional.
+sem banco de dados adicional. As Server Actions e a API de perfil passam pelo
+controller, pelo serviço e pelo repositório de perfil, que usam esses
+adaptadores; trocar o armazenamento exige apenas outra implementação de
+`UserRepository`.
 
 ## Frontend
 
@@ -77,6 +81,32 @@ senha. Username e email são somente leitura nesta versão.
 
 Limites de upload: 50 MB por imagem, 500 MB por vídeo e 100 MB por documento.
 
+## API de perfil
+
+As rotas exigem login (cookie de sessão) e respondem `{ profile }` ou
+`{ error }`. Os dados ficam no Cognito e a foto no S3, como nas telas. O perfil
+devolvido não inclui a chave interna da foto.
+
+| Método | Rota | Corpo (JSON) | Sucesso |
+| --- | --- | --- | --- |
+| `GET` | `/api/profile` | — | 200 `{ profile }` |
+| `PATCH` | `/api/profile` | `{ fullName, description }` | 200 `{ profile }` |
+| `PUT` | `/api/profile/avatar` | `{ key }` | 200 `{ profile }` |
+
+Erros: 400 para dados inválidos, 401 sem sessão, 403 para foto de outro
+usuário, 404 para foto ou perfil não encontrado, 415 sem
+`Content-Type: application/json` e 500 para falhas de configuração ou da AWS.
+
+Troca de foto pela API:
+
+1. `POST /api/s3/presign-put` com `{ filename, contentType, size, scope: "avatar" }`
+   devolve `{ putUrl, key }`.
+2. O navegador envia o arquivo direto ao S3 com `PUT putUrl`.
+3. `PUT /api/profile/avatar` com `{ key }` valida a imagem (até 5 MB), grava a
+   chave e apaga a foto anterior.
+
+A API não exige variável de ambiente nem permissão IAM além das já descritas.
+
 ## Implementado
 
 - Cadastro com nome completo, username, email, senha e descrição; confirmação nativa por código em página própria, com o username pré-preenchido.
@@ -93,6 +123,8 @@ Limites de upload: 50 MB por imagem, 500 MB por vídeo e 100 MB por documento.
   senha.
 - Foto de perfil no S3 em `avatars/{userId}/`, com validação de imagem e remoção
   da foto anterior.
+- API REST de perfil (`/api/profile` e `/api/profile/avatar`) e camadas de
+  controller, serviço e repositório do perfil, usadas também pelas Server Actions.
 - Testes automatizados sem chamadas reais à AWS.
 
 Não há renovação automática de sessão; após expirar, é necessário entrar de novo.
