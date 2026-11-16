@@ -7,20 +7,18 @@ Situação em **16/11/2026**.
 | Item | Estado |
 | --- | --- |
 | Aplicação (cadastro, login, galeria, perfil, API) | Implementada; validada com testes que simulam a AWS |
-| Rede AWS em Terraform | Aplicada e validada em uma conta de teste |
+| Rede AWS em Terraform | Aplicada na conta de produção; conta e estado confirmados pela equipe |
 | Cognito e S3 | Configuração documentada; criados manualmente (não estão no Terraform) |
 | EC2, IP público, proxy reverso e HTTPS | Publicada em <https://32-194-55-125.sslip.io>: EC2 com IP elástico 32.194.55.125 e IAM Role `ec2-app-role`, nginx com certificado Let's Encrypt, e HTTP redireciona para HTTPS. Diagrama em [arquitetura.md](arquitetura.md#infraestrutura) |
 | Versão publicada | Anterior ao backend de perfil: `/api/profile` responde 404 no servidor (conferido em 16/11/2026) |
-| Teste de ponta a ponta no endereço publicado | Pendente |
+| Teste de ponta a ponta no endereço publicado | Feito pela equipe |
 
 ## Pendências
 
 | Pendência | Por que importa |
 | --- | --- |
 | Publicar de novo a partir da `main` atual | O servidor roda um build anterior ao merge do backend de perfil; `/api/profile` e `/api/profile/avatar` respondem 404 |
-| Teste de ponta a ponta no endereço publicado | Confirma cadastro, login, galeria, perfil e foto com o Cognito e o S3 reais |
 | 8 testes e 5 avisos de lint | `npm test` e `npm run lint` precisam passar (ver [Problemas conhecidos](#problemas-conhecidos)) |
-| Confirmar a conta e o estado do Terraform da produção | O Terraform foi validado em uma conta de teste, e o estado fica na máquina de quem o aplicou |
 
 ## Publicar uma nova versão
 
