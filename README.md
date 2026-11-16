@@ -139,13 +139,13 @@ API /api/profile ───────┴─> controller ─> serviço ─> repo
 
 | Documento | Conteúdo |
 | --- | --- |
-| [docs/arquitetura.md](docs/arquitetura.md) | Camadas, fluxos (login, upload, perfil), segurança, infraestrutura na AWS e decisões |
 | [docs/stack.md](docs/stack.md) | Tecnologias, versões e o papel de cada uma |
-| [docs/como-rodar-e-testar.md](docs/como-rodar-e-testar.md) | Configuração, variáveis, execução, testes, build |
+| [docs/arquitetura.md](docs/arquitetura.md) | Camadas, fluxos (login, upload, perfil), segurança, infraestrutura na AWS e decisões |
 | [docs/api.md](docs/api.md) | Rotas HTTP, formatos e códigos de erro |
-| [docs/deploy-e-pendencias.md](docs/deploy-e-pendencias.md) | Estado da publicação, como publicar uma nova versão, pendências, limitações e problemas conhecidos |
+| [docs/como-rodar-e-testar.md](docs/como-rodar-e-testar.md) | Configuração, variáveis, execução, testes, build |
 | [infra/README.md](infra/README.md) | Terraform da rede, Security Group, IAM e S3 |
 | [infra/cognito/README.md](infra/cognito/README.md) | Configuração do User Pool e App Client |
+| [docs/deploy-e-pendencias.md](docs/deploy-e-pendencias.md) | Estado da publicação, como publicar uma nova versão, pendências, limitações e problemas conhecidos |
 
 ## Convenções
 
